@@ -70,7 +70,7 @@ const app = new Elysia()
     return res;
   }
   )
-  .use(openapi()).listen(3000);
+  .use(openapi()).listen(3001);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
