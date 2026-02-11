@@ -1,15 +1,32 @@
-# Elysia with Bun runtime
+# Reservation Agent
+
+## Description
+
+An agent that can research information about a business and make a reservation via a phone call.
 
 ## Getting Started
-To get started with this template, simply paste this command into your terminal:
+
+Firstly, install the dependencies:
+
 ```bash
-bun create elysia ./elysia-example
+bun install
 ```
 
+Create a `.env` file in the root of the project and add your API keys:
+
+```env
+OPENROUTER_API_KEY='your-openrouter-api-key'
+EXA_API_KEY='your-exa-api-key'
+```
+
+Exa search is used to find information about the business.
+
 ## Development
+
 To start the development server run:
+
 ```bash
 bun run dev
 ```
 
-Open http://localhost:3000/ with your browser to see the result.
+Open http://localhost:3000/openapi to see the OpenAPI documentation for the agent.
