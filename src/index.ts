@@ -6,6 +6,7 @@ import {
   z
 } from 'zod'
 import { researchBusiness } from "./agents";
+import { ElevenLabsClient, ElevenLabsEnvironment } from "@elevenlabs/elevenlabs-js";
 
 const app = new Elysia().get("/", () => "Yello")
   .post("/research_business", async ({ body }) => {
@@ -20,7 +21,47 @@ const app = new Elysia().get("/", () => "Yello")
     body: z.object({
       prompt: z.string(),
     })
-  })
+  }).post("/make_reservation", async ({ body }) => {
+    const client = new ElevenLabsClient({
+      environment: ElevenLabsEnvironment.Production,
+    });
+    const res = await client.conversationalAi.twilio.outboundCall({
+      agentId: process.env.ELEVENLABS_AGENT_ID!,
+      agentPhoneNumberId: process.env.ELEVENLABS_NUMBER_ID!,
+      toNumber: body.phoneNumber,
+      conversationInitiationClientData: {
+        dynamicVariables: {
+          person_name: body.personName,
+          business_name: body.businessName,
+          reservation_time: body.reservationTime,
+          num_people: body.numPeople,
+        }
+      }
+    });
+
+    console.log("Reservation call response: ", res);
+
+    return res;
+
+  }, {
+    body: z.object({
+      businessName: z.string(),
+      phoneNumber: z.string(),
+      reservationTime: z.string(),
+      numPeople: z.string(),
+      personName: z.string(),
+    })
+  }).get('/conversation_details/:id', async ({ params: { id } }) => {
+    const client = new ElevenLabsClient({
+      environment: ElevenLabsEnvironment.Production,
+    });
+
+    const res = await client.conversationalAi.conversations.get(id);
+    console.log("Conversation details response: ", res);
+
+    return res;
+  }
+  )
   .use(openapi()).listen(3000);
 
 console.log(
