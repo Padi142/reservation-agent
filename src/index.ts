@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import {
   openapi
 } from '@elysiajs/openapi'
@@ -8,7 +8,15 @@ import {
 import { researchBusiness } from "./agents";
 import { ElevenLabsClient, ElevenLabsEnvironment } from "@elevenlabs/elevenlabs-js";
 
-const app = new Elysia().get("/", () => "Yello")
+const isProduction = process.env.NODE_ENV === 'production';
+
+const app = new Elysia()
+  .guard(isProduction ? {
+    headers: t.Object({
+      'x-magic': t.String({ pattern: `^${process.env.AUTH_TOKEN}$` })
+    })
+  } : {})
+  .get("/", () => "Yello")
   .post("/research_business", async ({ body }) => {
     console.log("Received request to research business with prompt: " + body.prompt);
 
