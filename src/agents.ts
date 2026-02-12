@@ -67,7 +67,7 @@ Remember to:
 6. Make multiple searches until you have gathered all available information`;
 
         const result = await generateText({
-            model: openrouter('anthropic/claude-sonnet-4.5'),
+            model: openrouter('z-ai/glm-5'),
             system: researchSystemPrompt,
             prompt: enhancedPrompt,
             tools: {
